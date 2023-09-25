@@ -1,8 +1,8 @@
 {
-  "name": "userscript-typescript-template",
-  "version": "2.0.2",
-  "description": "Template repo using Webpack and TypeScript to build your userscript for Tampermonkey and more extensions.",
-  "main": "userscript/index.user.js",
+  "name": "dearrow-frontends",
+  "version": "1.0.0",
+  "description": "Userscript to support DeArrow API in alternative YouTube frontends such as Invidious and Piped",
+  "main": "userscripts/index.prod.user.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack/prod.ts",
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pboymt/userscript-typescript-template.git"
+    "url": "git+https://github.com/DeltAndy/DeArrow-Frontends.git"
   },
   "keywords": [],
-  "author": "pboymt",
+  "author": "DeltAndy",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pboymt/userscript-typescript-template/issues"
+    "url": "https://github.com/DeltAndy/DeArrow-Frontends/issues"
   },
-  "homepage": "https://github.com/pboymt/userscript-typescript-template#readme",
+  "homepage": "https://github.com/DeltAndy/DeArrow-Frontends#readme",
   "devDependencies": {
     "@types/node": "^18.15.11",
     "@types/prettier": "^2.7.0",
@@ -30,24 +30,36 @@
     "ts-loader": "^9.2.6",
     "ts-node": "^10.4.0",
     "typescript": "^5.0.4",
-    "webpack": "^5.64.3",
+    "webpack": "^5.88.2",
     "webpack-cli": "^5.0.1",
     "webpack-merge": "^5.8.0"
   },
   "userscript": {
+    "name": "DeArrow Frontends",
     "require-template": "https://cdn.jsdelivr.net/npm/${dependencyName}@${dependencyVersion}",
-    "namespace": "http://tampermonkey.net/",
+    "namespace": "https://deltandy.me",
+    "icon": "https://dearrow.ajay.app/logo.svg",
     "license": "https://opensource.org/licenses/MIT",
     "match": [
-      "https://github.com/*",
-      "https://www.baidu.com/*"
+      "https://invidious.asir.dev/*"
     ],
     "connect": [
-      "github.com"
+      "sponsor.ajay.app",
+      "dearrow-thumb.ajay.app",
+      "*"
     ],
-    "require": [],
+    "require": [
+      "https://cdn.jsdelivr.net/gh/DeltAndy123/Utilities@1315c44/javascript/textcase.min.js",
+      "https://cdn.jsdelivr.net/gh/DeltAndy123/Utilities@1315c44/javascript/textutil.min.js",
+      "https://openuserjs.org/src/libs/sizzle/GM_config.js"
+    ],
     "grant": [
-      "GM.xmlHttpRequest"
+      "GM.xmlHttpRequest",
+      "GM.registerMenuCommand",
+      "GM_setValue",
+      "GM.setValue",
+      "GM_getValue",
+      "GM.getValue"
     ],
     "exclude": [],
     "resources": [],
