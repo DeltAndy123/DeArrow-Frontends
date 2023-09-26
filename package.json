@@ -67,6 +67,7 @@
   },
   "dependencies": {
     "@trim21/gm-fetch": "^0.1.13",
-    "axios": "^1.3.6"
+    "axios": "^1.3.6",
+    "buffer": "^6.0.3"
   }
 }

@@ -24,3 +24,13 @@ export function waitForValue<K, V>(obj: Record<string, V> | Map<K, V>, key: K, t
     }, 10)
   })
 }
+
+/**
+ * Round a number to a certain number of digits
+ * @param num - The number to round
+ * @param digits - The number of digits to round to
+ */
+export function roundDigits(num: number, digits?: number): number {
+  const factor = 10 ** (digits || 0)
+  return Math.round(num * factor) / factor
+}

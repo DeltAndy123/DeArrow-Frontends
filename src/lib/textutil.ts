@@ -258,7 +258,7 @@ export function isFirstLetterCapital(word: string) {
   return !!word.match(/^[^\p{L}]*[\p{Lu}]/u);
 }
 
-function forceKeepFormatting(word: string, ignorePunctuation = true) {
+export function forceKeepFormatting(word: string, ignorePunctuation = true) {
   let result = !!word.match(/^>/)
       || listHasWord(allowlistedWords, word);
 
@@ -314,4 +314,89 @@ function isDelimiter(word: string) {
 
 function listHasWord(list: Set<string>, word: string) {
   return list.has(word.replace(/[[「〈《【〔⦗『〖〘<({:〙〗』⦘〕】》〉」)}\]]/g, ""))
+}
+
+
+export function cleanText(str: string) {
+  return cleanPunctuation(str)
+      .replace(/(^|\s)>(\S)/g, "$1$2")
+      .trim();
+}
+
+function cleanWordPunctuation(str: string) {
+  const words = str.trim().split(" ");
+  if (words.length > 0 && forceKeepFormatting(words[words.length - 1], false)) {
+    return str;
+  }
+
+  let toTrim = 0;
+  let questionMarkCount = 0;
+  for (let i = str.length - 1; i >= 0; i--) {
+    toTrim = i;
+
+    if (str[i] === "?") {
+      questionMarkCount++;
+    } else if (str[i] !== "!" && str[i] !== "." && str[i] !== " ") {
+      break;
+    }
+  }
+
+  let cleanTitle = toTrim === str.length ? str : str.substring(0, toTrim + 1);
+  if (questionMarkCount > 0) {
+    cleanTitle += "?";
+  }
+
+  return cleanTitle;
+}
+
+export function cleanPunctuation(str: string) {
+  str = cleanWordPunctuation(str);
+  const words = str.split(" ");
+
+  let result = "";
+  let index = 0;
+  for (let word of words) {
+    if (!forceKeepFormatting(word, false)
+        && index !== words.length - 1) { // Last already handled
+      if (word.includes("?")) {
+        word = cleanWordPunctuation(word);
+      } else if (word.match(/[!]+$/)) {
+        if (words.length > index + 1 && !isDelimiter(words[index + 1])) {
+          // Insert a period instead
+          word = cleanWordPunctuation(word) + ". ";
+        } else {
+          word = cleanWordPunctuation(word);
+        }
+      }
+    }
+
+    word = word.trim();
+    if (word.trim().length > 0) {
+      result += word + " ";
+    }
+
+    index++;
+  }
+
+  return result.trim();
+}
+
+export function cleanEmojis(str: string) {
+  // \uFE0F is the emoji variation selector, it comes after non colored symbols to turn them into emojis
+  // \uFE0E is similar but makes colored emojis into non colored ones
+  // \u200D is the zero width joiner, it joins emojis together
+
+  const cleaned = str
+      // Clear extra spaces between emoji "words"
+      .replace(/ ((?=\p{Extended_Pictographic})(?=[^🅰🆎🅱🆑🅾])\S(?:\uFE0F?\uFE0E?\p{Emoji_Modifier}?\u200D?)*)+(?= )/ug, "")
+      // Emojis in between letters should be spaces, variant selector is allowed before to allow B emoji
+      .replace(/(\p{L}|[\uFE0F\uFE0E🆎🆑])(?:(?=\p{Extended_Pictographic})(?=[^🅰🆎🅱🆑🅾])\S(?:\uFE0F?\uFE0E?\p{Emoji_Modifier}?\u200D?)*)+(\p{L}|[🅰🆎🅱🆑🅾])/ug, "$1 $2")
+      .replace(/(?=\p{Extended_Pictographic})(?=[^🅰🆎🅱🆑🅾])\S(?:\uFE0F?\uFE0E?\p{Emoji_Modifier}?\u200D?)*/ug, "")
+      .trim();
+
+  if (cleaned.length > 0) {
+    return cleaned;
+  } else {
+    return str;
+  }
 }

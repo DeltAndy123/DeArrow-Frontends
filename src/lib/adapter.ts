@@ -1,11 +1,10 @@
 import GM_fetch from '@trim21/gm-fetch';
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import {AxiosRequestConfig, AxiosResponse} from 'axios';
 
 export default async function fetchAdapter(config: AxiosRequestConfig): Promise<AxiosResponse<any>> {
     const request = createRequest(config);
     try {
-        const response = await createResponse(request, config);
-        return response;
+        return await createResponse(request, config);
     } catch (error) {
         throw error;
     }

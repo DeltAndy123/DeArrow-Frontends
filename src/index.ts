@@ -2,7 +2,7 @@ import axios from "axios";
 import fetchAdapter from "./lib/adapter";
 import {$$, settingsIcon} from "./lib/elements";
 import {list} from "./lib/gmconfigtypes";
-import invidious from "./invidious";
+import modifyDOM from "./modify";
 axios.defaults.adapter = fetchAdapter;
 
 const frame = $$("div")
@@ -68,7 +68,7 @@ const config = new GM_config<"list">({
   events: {
     init: () => {
       console.log("init");
-      invidious(config)
+      modifyDOM(config)
     },
     save: () => {
       console.log("save")
